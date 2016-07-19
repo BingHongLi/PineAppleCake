@@ -1,0 +1,1 @@
+GET   /          controllers.Template.test()
