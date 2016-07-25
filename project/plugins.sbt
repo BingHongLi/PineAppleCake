@@ -1,4 +1,5 @@
-logLevel := Level.Warn
+// slf4j 改用獨立設定檔
+// logLevel := Level.Warn
 
 // The Typesafe repository
 resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/maven-releases/"
