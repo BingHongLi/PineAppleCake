@@ -1,1 +1,4 @@
 GET   /          controllers.Template.test()
+POST    /pineApple1    controllers.PineApple.pineApple1()
+POST    /pineApple2    controllers.PineApple.pineApple2()
+POST    /pintAppleSum    controllers.PineApple.pineAppleSum()
