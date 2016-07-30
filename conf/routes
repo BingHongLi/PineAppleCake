@@ -1,1 +1,2 @@
 GET   /          controllers.Template.test()
+POST    /pineApple1    controllers.PineApple.pineApple1()

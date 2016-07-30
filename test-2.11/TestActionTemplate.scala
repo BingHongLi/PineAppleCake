@@ -21,11 +21,10 @@ class TestActionTemplate extends PlaySpec with OneAppPerSuite with Controller {
     "can transfer ok " in {
 //    需混入Controller，但官網卻沒有混入，hans or alison 這邊可測一下
       val action: EssentialAction = Action { request =>
-        Ok("ok")
+        Ok("JustTest")
       }
       val request = FakeRequest("GET","/")
-//    val result  = call(action, request)
-      val result = call(new controllers.Template().test, request)
+      val result  = call(action, request)
       status(result) mustEqual OK
       contentAsString(result) mustEqual("JustTest")
     }
