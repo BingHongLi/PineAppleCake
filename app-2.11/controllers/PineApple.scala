@@ -39,8 +39,8 @@ class PineApple extends Controller with AccessLogging {
   val logger = Logger(this.getClass)
 
 //  https://www.playframework.com/documentation/2.5.x/ScalaJsonAutomated
-  implicit val pineAppleRead2 = Json.reads[PineAppleJsonFormat]
-  implicit val pineAppleWrites2 = Json.writes[PineAppleJsonFormat]
+//  implicit val pineAppleRead2 = Json.reads[PineAppleJsonFormat]
+//  implicit val pineAppleWrites2 = Json.writes[PineAppleJsonFormat]
   implicit val pineAppleFormat2 = Json.format[PineAppleJsonFormat]
 
 //  implicit val pineAppleJsonWrites:Writes[PineAppleJsonFormat] =(
