@@ -38,24 +38,29 @@ class PineApple extends Controller with AccessLogging {
 
   val logger = Logger(this.getClass)
 
-  implicit val pineAppleJsonWrites:Writes[PineAppleJsonFormat] =(
-    (JsPath \ "vote").write[Int]and
-      (JsPath \ "cake1Sum").write[Int] and
-      (JsPath \ "cake2Sum").write[Int] and
-      (JsPath \ "totalTickets").write[Int] and
-      (JsPath \ "leftTickets").write[Int] and
-      (JsPath \ "winner").write[Int]
-    )(unlift(PineAppleJsonFormat.unapply))
+//  https://www.playframework.com/documentation/2.5.x/ScalaJsonAutomated
+  implicit val pineAppleRead2 = Json.reads[PineAppleJsonFormat]
+  implicit val pineAppleWrites2 = Json.writes[PineAppleJsonFormat]
+  implicit val pineAppleFormat2 = Json.format[PineAppleJsonFormat]
 
-  implicit val pineAppleJsonReads:Reads[PineAppleJsonFormat]=(
-    (JsPath \ "vote").read[Int](min(0) keepAnd max(2)) and
-      (JsPath \ "cake1Sum").read[Int] and
-      (JsPath \ "cake2Sum").read[Int] and
-      (JsPath \ "totalTickets").read[Int] and
-      (JsPath \ "leftTickets").read[Int] and
-      (JsPath \ "winner").read[Int](min(0) keepAnd max(3))
-    )(PineAppleJsonFormat.apply _ )
-  implicit val pineAppleFormat:Format[PineAppleJsonFormat] = Format(pineAppleJsonReads, pineAppleJsonWrites)
+//  implicit val pineAppleJsonWrites:Writes[PineAppleJsonFormat] =(
+//    (JsPath \ "vote").write[Int]and
+//      (JsPath \ "cake1Sum").write[Int] and
+//      (JsPath \ "cake2Sum").write[Int] and
+//      (JsPath \ "totalTickets").write[Int] and
+//      (JsPath \ "leftTickets").write[Int] and
+//      (JsPath \ "winner").write[Int]
+//    )(unlift(PineAppleJsonFormat.unapply))
+//
+//  implicit val pineAppleJsonReads:Reads[PineAppleJsonFormat]=(
+//    (JsPath \ "vote").read[Int](min(0) keepAnd max(2)) and
+//      (JsPath \ "cake1Sum").read[Int] and
+//      (JsPath \ "cake2Sum").read[Int] and
+//      (JsPath \ "totalTickets").read[Int] and
+//      (JsPath \ "leftTickets").read[Int] and
+//      (JsPath \ "winner").read[Int](min(0) keepAnd max(3))
+//    )(PineAppleJsonFormat.apply _ )
+//  implicit val pineAppleFormat:Format[PineAppleJsonFormat] = Format(pineAppleJsonReads, pineAppleJsonWrites)
 
 
   def pineApple1() = TODO
@@ -67,33 +72,38 @@ class PineApple extends Controller with AccessLogging {
 //      val bodyJsonTest = request.body
 //      val bodyJson = bodyJsonTest.asJson.get.validate[PineAppleJsonFormat].get
       logger.info("get request, we will parse the request body to an object")
-      val bodyJson = request.body.validate[PineAppleJsonFormat] match {
+
+      request.body.validate[PineAppleJsonFormat] match {
+
          case s :JsSuccess[PineAppleJsonFormat] => {
-           s.get
+           val bodyJson = s.get
+           logger.info("caculate winner's value")
+           val winnerState = if(bodyJson.cake1Sum > bodyJson.cake2Sum){
+             1
+           }else if (bodyJson.cake1Sum < bodyJson.cake2Sum) {
+             2
+           }else{
+             3
+           }
+           logger.info("transform to a json result")
+          val pineAppleJson = PineAppleJsonFormat(
+             0,
+             bodyJson.cake1Sum,
+             bodyJson.cake2Sum,
+             bodyJson.totalTickets,
+             bodyJson.leftTickets,
+             winnerState
+           )
+           logger.info("sent the resonpse with json")
+           Ok(Json.toJson(pineAppleJson))
+         }
+         case e:JsError => {
+           logger.warn("invalid body input")
+           BadRequest("Expecting application/json request body")
          }
       }
 
-      logger.info("caculate winner's value")
-      val winnerState = if(bodyJson.cake1Sum > bodyJson.cake2Sum){
-        1
-      }else if (bodyJson.cake1Sum < bodyJson.cake2Sum) {
-        2
-      }else{
-        3
-      }
 
-      logger.info("transform to a json result")
-      val pineAppleJson = PineAppleJsonFormat(
-        0,
-        bodyJson.cake1Sum,
-        bodyJson.cake2Sum,
-        bodyJson.totalTickets,
-        bodyJson.leftTickets,
-        winnerState
-      )
-
-      logger.info("sent the resonpse with json")
-      Ok(Json.toJson(pineAppleJson))
     }
   }
 
