@@ -2,7 +2,6 @@
   * Created by BingHongLi on 2016/7/25.
   */
 import org.scalatestplus.play._
-import play.api.http.HttpEntity
 import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
@@ -91,6 +90,22 @@ class TestPineAppleSum  extends PlaySpec with OneAppPerSuite with Controller {
       val result = call(new controllers.PineApple().pineAppleSum, request)
       status(result) mustEqual BadRequest.header.status
     }
+
+
+    "test route action" in {
+      val request = FakeRequest("POST","/pineAppleSum").withJsonBody(Json.parse(
+        """{
+                         "vote" : 0,
+                         "cake 1 sum" : 5,
+                         "cake 2 sum" : 5 ,
+                         "left tickets" : 1
+        }"""
+      )).withHeaders((CONTENT_TYPE,"text/json"))
+      val Some(result) =  route(app,request)
+//      val result = call(new controllers.PineApple().pineAppleSum, request)
+      status(result) mustEqual BadRequest.header.status
+    }
+
   }
 
 }
