@@ -92,7 +92,7 @@ class TestPineAppleSum  extends PlaySpec with OneAppPerSuite with Controller {
     }
 
 
-    "test route action" in {
+    "test route action" in new App(){
       val request = FakeRequest("POST","/pineAppleSum").withJsonBody(Json.parse(
         """{
                          "vote" : 0,
